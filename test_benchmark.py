@@ -18,12 +18,6 @@ def valid_config():
 
 
 class BenchmarkConfigTests(unittest.TestCase):
-    def test_rejects_concurrency_above_one(self):
-        config = valid_config()
-        config["benchmark"]["concurrency"] = 2
-
-        with self.assertRaisesRegex(ValueError, "concurrency must be 1"):
-            validate_config(config)
 
     def test_rejects_network_concurrency_drift(self):
         config = valid_config()

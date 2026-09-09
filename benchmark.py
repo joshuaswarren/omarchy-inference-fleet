@@ -4,7 +4,6 @@ import hashlib
 import importlib.metadata
 import json
 import math
-import os
 import platform
 import statistics
 import subprocess
@@ -17,8 +16,6 @@ from pathlib import Path
 def validate_config(config):
     benchmark = config["benchmark"]
     generation = config["generation"]
-    if benchmark["concurrency"] != 1:
-        raise ValueError("concurrency must be 1")
     if config["network_layout"]["concurrency"] != benchmark["concurrency"]:
         raise ValueError("network and benchmark concurrency must match")
     for key in ("runs_per_point", "warmup_runs"):
@@ -156,13 +153,13 @@ def benchmark_once(model, tokenizer, prompt_tokens, generation):
     }
 
 
-def write_run(output, model_config, prompt, run_number, metrics, env, network_layout):
+def write_run(output, model_config, prompt, run_number, metrics, env, config):
     result = {
-        "schema_version": 1,
+        "schema_version": config["schema_version"],
         "status": "complete",
         "recorded_at": datetime.now(timezone.utc).isoformat(),
         "environment": env,
-        "network_layout": network_layout,
+        "network_layout": config["network_layout"],
         "model": {
             "key": model_config["key"],
             "model_id": model_config["model_id"],
@@ -235,7 +232,7 @@ def run(config, model_key, output, host_label, root):
             print(json.dumps({"event": "warmup", "prompt": prompt["id"], "run": warmup + 1}), flush=True)
         for run_number in range(1, config["benchmark"]["runs_per_point"] + 1):
             metrics = benchmark_once(model, tokenizer, tokens, config["generation"])
-            path = write_run(output, model_config, prompt, run_number, metrics, env, config["network_layout"])
+            path = write_run(output, model_config, prompt, run_number, metrics, env, config)
             print(json.dumps({"event": "run", "path": path.name, "metrics": metrics}), flush=True)
     (output / "SUMMARY.md").write_text(build_summary(output))
 
