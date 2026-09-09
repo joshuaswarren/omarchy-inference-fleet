@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "versions": {
     "python": "3.9.6",
     "mlx": "0.29.3",
@@ -14,7 +14,8 @@
     "concurrency": 1,
     "runs_per_point": 3,
     "warmup_runs": 1,
-    "minimum_available_memory_gib_for_large_models": 40
+    "minimum_available_memory_gib": 40,
+    "maximum_load_average_1m": 4.0
   },
   "generation": {
     "max_tokens": 128,
