@@ -54,20 +54,23 @@ def git_state(root):
     return {"commit": commit, "dirty": bool(dirty) if dirty is not None else None}
 
 
+def macos_free_memory_bytes(output):
+    first_line, *lines = output.splitlines()
+    page_size = int(first_line.split("page size of ", 1)[1].split(" bytes", 1)[0])
+    pages = {}
+    for line in lines:
+        if ":" in line:
+            key, value = line.split(":", 1)
+            pages[key] = int(value.strip().rstrip("."))
+    return pages.get("Pages free", 0) * page_size
+
+
 def available_memory_bytes():
     if platform.system() == "Darwin":
         output = command_output("vm_stat")
         if not output:
             return None
-        first_line, *lines = output.splitlines()
-        page_size = int(first_line.split("page size of ", 1)[1].split(" bytes", 1)[0])
-        pages = {}
-        for line in lines:
-            if ":" in line:
-                key, value = line.split(":", 1)
-                pages[key] = int(value.strip().rstrip("."))
-        reclaimable = sum(pages.get(key, 0) for key in ("Pages free", "Pages inactive", "Pages speculative", "Pages purgeable"))
-        return reclaimable * page_size
+        return macos_free_memory_bytes(output)
     if platform.system() == "Linux":
         for line in Path("/proc/meminfo").read_text().splitlines():
             if line.startswith("MemAvailable:"):

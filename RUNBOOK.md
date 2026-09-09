@@ -16,7 +16,7 @@ top -l 1 -n 0 | head -n 15
 vm_stat
 ```
 
-On Linux, replace the macOS checks with `df -h /`, `top -b -n 1`, and `/proc/meminfo`. The harness reads `MemAvailable` on Linux. On macOS it counts free, inactive, speculative, and purgeable pages as available. The large-model threshold comes from `config.json`; the harness checks it before model load.
+On Linux, replace the macOS checks with `df -h /`, `top -b -n 1`, and `/proc/meminfo`. The harness reads `MemAvailable` on Linux. On macOS it uses only `vm_stat` free pages, matching the run safety threshold. The large-model threshold comes from `config.json`; the harness checks it before model load.
 
 ## Run the pinned points
 

@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from benchmark import build_summary, validate_config
+from benchmark import build_summary, macos_free_memory_bytes, validate_config
 
 
 def valid_config():
@@ -31,6 +31,18 @@ class BenchmarkConfigTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "network and benchmark concurrency must match"):
             validate_config(config)
+
+
+class MemoryTests(unittest.TestCase):
+    def test_macos_guard_uses_free_pages_only(self):
+        vm_stat = """Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free: 100.
+Pages inactive: 900.
+Pages speculative: 500.
+Pages purgeable: 200.
+"""
+
+        self.assertEqual(100 * 16384, macos_free_memory_bytes(vm_stat))
 
 
 class SummaryTests(unittest.TestCase):
