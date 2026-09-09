@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "versions": {
+    "python": "3.9.6",
+    "mlx": "0.29.3",
+    "mlx-lm": "0.29.1"
+  },
+  "network_layout": {
+    "mode": "single-node",
+    "transport": "local-process",
+    "concurrency": 1
+  },
+  "benchmark": {
+    "concurrency": 1,
+    "runs_per_point": 3,
+    "warmup_runs": 1,
+    "minimum_available_memory_gib_for_large_models": 40
+  },
+  "generation": {
+    "max_tokens": 128,
+    "temperature": 0.0
+  },
+  "prompts": [
+    {
+      "id": "release-30",
+      "target_tokens": 30,
+      "seed_text": "Explain how unified memory affects local language model inference on Apple silicon. Include one practical measurement note. "
+    },
+    {
+      "id": "release-262",
+      "target_tokens": 262,
+      "seed_text": "Compare prefill and decode performance for a local language model. Discuss prompt length, memory bandwidth, quantization, thermal state, and why repeated measured runs matter. Use precise technical language and state which metrics make two machines comparable. "
+    },
+    {
+      "id": "release-1053",
+      "target_tokens": 1053,
+      "seed_text": "Write a technical analysis of single-node language model inference. Cover tokenizer cost, prompt prefill, autoregressive decode, unified memory, model quantization, cache growth, operating-system pressure, reproducible prompts, warmup behavior, version pinning, and network isolation. Distinguish measured facts from interpretation and explain how a later heterogeneous fleet can reuse the same harness without changing the benchmark contract. "
+    }
+  ],
+  "models": [
+    {
+      "key": "qwen2.5-0.5b-instruct-4bit",
+      "model_id": "mlx-community/Qwen2.5-0.5B-Instruct-4bit",
+      "revision": "a5339a4131f135d0fdc6a5c8b5bbed2753bbe0f3",
+      "quantization": "4bit",
+      "size_class": "comparison",
+      "present_before_baseline": false
+    },
+    {
+      "key": "qwen2.5-7b-instruct-4bit",
+      "model_id": "mlx-community/Qwen2.5-7B-Instruct-4bit",
+      "revision": "c26a38f6a37d0a51b4e9a1eb3026530fa35d9fed",
+      "quantization": "4bit",
+      "size_class": "large",
+      "present_before_baseline": false
+    }
+  ]
+}
