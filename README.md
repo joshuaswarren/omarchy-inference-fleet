@@ -6,7 +6,7 @@ The JSON config is the benchmark contract. It pins model revisions, quantization
 
 ## Results
 
-Published run JSON and the generated median table live under [`results/`](results/). Hostnames and local paths are not recorded.
+Accepted run JSON and its generated median table live under [`results/`](results/) when the measurement guard passes. Hostnames and local paths are not recorded. The first schema 2 rerun did not pass the memory and load guard, so the repository has no current baseline numbers.
 
 Each result uses these metric intervals:
 
