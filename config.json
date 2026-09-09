@@ -47,9 +47,19 @@
       "present_before_baseline": false
     },
     {
-      "key": "qwen2.5-7b-instruct-4bit",
-      "model_id": "mlx-community/Qwen2.5-7B-Instruct-4bit",
-      "revision": "c26a38f6a37d0a51b4e9a1eb3026530fa35d9fed",
+      "key": "qwen3-14b-4bit",
+      "model_id": "mlx-community/Qwen3-14B-4bit",
+      "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+      "selection_verified_on": "2026-09-09",
+      "repository_last_modified": "2025-04-29T02:47:57.000Z",
+      "license": "apache-2.0",
+      "gated": false,
+      "download_bytes": 8323870520,
+      "tooling_support": "mlx-lm 0.29.1 includes the qwen3 architecture",
+      "selection_sources": [
+        "https://huggingface.co/api/models/mlx-community/Qwen3-14B-4bit",
+        "https://github.com/ml-explore/mlx-lm"
+      ],
       "quantization": "4bit",
       "size_class": "large",
       "present_before_baseline": false

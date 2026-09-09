@@ -31,7 +31,7 @@ python3 benchmark.py \
 
 python3 benchmark.py \
   --config config.json \
-  --model qwen2.5-7b-instruct-4bit \
+  --model qwen3-14b-4bit \
   --output results/vendor-os-single-node \
   --host-label mac-m1-ultra
 ```
