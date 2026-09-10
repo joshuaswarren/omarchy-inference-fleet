@@ -8,6 +8,7 @@ from benchmark import (
     check_measurement_consistency,
     macos_free_memory_bytes,
     measurement_guard_reason,
+    measurement_requirements,
     validate_config,
     write_run,
 )
@@ -22,7 +23,7 @@ def valid_config():
             "runs_per_point": 3,
             "warmup_runs": 1,
             "minimum_available_memory_gib": 40,
-            "maximum_load_average_1m": 4.0,
+            "maximum_load_average_1m_per_core": 0.2,
         },
         "generation": {"max_tokens": 32, "temperature": 0.0},
         "prompts": [{"id": "short", "target_tokens": 30, "seed_text": "test"}],
@@ -40,6 +41,13 @@ class BenchmarkConfigTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "network and benchmark concurrency must match"):
             validate_config(config)
 
+    def test_rejects_invalid_per_model_memory_floor(self):
+        config = valid_config()
+        config["models"][0]["min_free_memory_gib"] = 0
+
+        with self.assertRaisesRegex(ValueError, "min_free_memory_gib"):
+            validate_config(config)
+
 
 class MemoryTests(unittest.TestCase):
     def test_macos_guard_uses_free_pages_only(self):
@@ -54,6 +62,30 @@ Pages purgeable: 200.
 
 
 class MeasurementGuardTests(unittest.TestCase):
+    def test_model_floor_overrides_global_default(self):
+        config = valid_config()
+        config["models"][0]["min_free_memory_gib"] = 8
+
+        required, _ = measurement_requirements(config["benchmark"], config["models"][0], 10)
+
+        self.assertEqual(8, required)
+
+    def test_model_without_floor_uses_global_default(self):
+        config = valid_config()
+
+        required, _ = measurement_requirements(config["benchmark"], config["models"][0], 10)
+
+        self.assertEqual(40, required)
+
+    def test_load_ceiling_scales_with_core_count(self):
+        config = valid_config()
+
+        _, ten_core_ceiling = measurement_requirements(config["benchmark"], config["models"][0], 10)
+        _, twenty_core_ceiling = measurement_requirements(config["benchmark"], config["models"][0], 20)
+
+        self.assertEqual(2.0, ten_core_ceiling)
+        self.assertEqual(4.0, twenty_core_ceiling)
+
     def test_rejects_low_memory_before_model_load(self):
         reason = measurement_guard_reason(39.5, 1.0, 40, 4.0)
 

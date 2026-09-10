@@ -6,7 +6,7 @@ The JSON config is the benchmark contract. It pins model revisions, quantization
 
 ## Results
 
-Accepted run JSON and its generated median table live under [`results/`](results/) when the measurement guard passes. Hostnames and local paths are not recorded. The first schema 2 rerun did not pass the memory and load guard, so the repository has no current baseline numbers.
+Accepted run JSON and its generated median table live under [`results/`](results/) when the measurement guard passes. Hostnames and local paths are not recorded.
 
 Each result uses these metric intervals:
 
@@ -25,7 +25,11 @@ Each result uses these metric intervals:
 - `finish_reason` records why mlx-lm stopped generation.
 - `output_sha256` hashes the streamed text segments in order without storing generated text.
 
-Before model load, the harness records `available_memory_gib_before_load` and `load_average_1m_before_load`. It refuses to load the model unless both meet the configured limits. The checked-in config requires at least 40 GiB free and a 1-minute load average no greater than 4.0.
+Before model load, the harness records `available_memory_gib_before_load`, `load_average_1m_before_load`, `logical_core_count`, and both derived thresholds. It refuses to load the model unless both observed values meet those thresholds.
+
+The global memory default is 40 GiB. A model can override it with `min_free_memory_gib`. Qwen2.5 0.5B uses 8 GiB because its measured 1.28 GiB peak makes that a 6.25 times allowance. The remaining 6.72 GiB covers model loading, the runtime, cache growth, and operating-system variation without applying the 14B model's requirement to a 0.5B model. Qwen3 14B remains at 40 GiB.
+
+The load ceiling is 0.2 per logical core. This preserves the Studio ceiling of 4.0 on 20 cores and derives a ceiling of 2.0 on a 10-core M1 Max. Every result records the core count, per-core setting, and derived ceiling.
 
 Before writing a run, the harness checks the prefill rate, TTFT decomposition, and total-time decomposition. A failed check writes `status: "inconsistent"` and `inconsistency_reason`. The generated summary excludes inconsistent runs.
 

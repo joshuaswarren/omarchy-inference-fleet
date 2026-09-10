@@ -15,7 +15,7 @@
     "runs_per_point": 3,
     "warmup_runs": 1,
     "minimum_available_memory_gib": 40,
-    "maximum_load_average_1m": 4.0
+    "maximum_load_average_1m_per_core": 0.2
   },
   "generation": {
     "max_tokens": 128,
@@ -45,6 +45,7 @@
       "revision": "a5339a4131f135d0fdc6a5c8b5bbed2753bbe0f3",
       "quantization": "4bit",
       "size_class": "comparison",
+      "min_free_memory_gib": 8,
       "present_before_baseline": false
     },
     {
@@ -63,6 +64,7 @@
       ],
       "quantization": "4bit",
       "size_class": "large",
+      "min_free_memory_gib": 40,
       "present_before_baseline": false
     }
   ]

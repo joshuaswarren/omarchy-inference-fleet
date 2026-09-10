@@ -22,10 +22,14 @@ def validate_config(config):
     for key in ("runs_per_point", "warmup_runs"):
         if not isinstance(benchmark[key], int) or benchmark[key] < (0 if key == "warmup_runs" else 1):
             raise ValueError(f"{key} has an invalid value")
-    for key in ("minimum_available_memory_gib", "maximum_load_average_1m"):
+    for key in ("minimum_available_memory_gib", "maximum_load_average_1m_per_core"):
         value = benchmark.get(key)
         if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
             raise ValueError(f"{key} has an invalid value")
+    for model in config["models"]:
+        value = model.get("min_free_memory_gib", benchmark["minimum_available_memory_gib"])
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
+            raise ValueError(f"min_free_memory_gib has an invalid value for {model['key']}")
     if not isinstance(generation["max_tokens"], int) or generation["max_tokens"] < 1:
         raise ValueError("max_tokens must be a positive integer")
     prompt_ids = {prompt["id"] for prompt in config["prompts"]}
@@ -90,6 +94,7 @@ def environment(host_label, root):
         load_average = os.getloadavg()[0]
     except OSError:
         load_average = None
+    core_count = os.cpu_count()
     return {
         "host": host_label,
         "chip": chip,
@@ -102,7 +107,16 @@ def environment(host_label, root):
         "git": git_state(root),
         "available_memory_gib_before_load": round(available / (1024 ** 3), 3) if available is not None else None,
         "load_average_1m_before_load": round(load_average, 3) if load_average is not None else None,
+        "logical_core_count": core_count,
     }
+
+
+def measurement_requirements(benchmark, model, core_count):
+    if not core_count:
+        raise RuntimeError("measurement conditions guard: logical core count could not be measured")
+    minimum_memory_gib = model.get("min_free_memory_gib", benchmark["minimum_available_memory_gib"])
+    maximum_load_average = benchmark["maximum_load_average_1m_per_core"] * core_count
+    return minimum_memory_gib, maximum_load_average
 
 
 def measurement_guard_reason(available_gib, load_average, minimum_memory_gib, maximum_load_average):
@@ -274,13 +288,17 @@ def run(config, model_key, output, host_label, root):
     env["generation"] = config["generation"]
     check_versions(config["versions"], env)
     benchmark_config = config["benchmark"]
-    env["minimum_available_memory_gib"] = benchmark_config["minimum_available_memory_gib"]
-    env["maximum_load_average_1m"] = benchmark_config["maximum_load_average_1m"]
+    minimum_memory_gib, maximum_load_average = measurement_requirements(
+        benchmark_config, model_config, env["logical_core_count"]
+    )
+    env["minimum_available_memory_gib"] = minimum_memory_gib
+    env["maximum_load_average_1m"] = maximum_load_average
+    env["maximum_load_average_1m_per_core"] = benchmark_config["maximum_load_average_1m_per_core"]
     guard_reason = measurement_guard_reason(
         env["available_memory_gib_before_load"],
         env["load_average_1m_before_load"],
-        benchmark_config["minimum_available_memory_gib"],
-        benchmark_config["maximum_load_average_1m"],
+        minimum_memory_gib,
+        maximum_load_average,
     )
     if guard_reason:
         raise RuntimeError(guard_reason)
