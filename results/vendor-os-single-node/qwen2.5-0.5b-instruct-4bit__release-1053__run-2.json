@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "status": "complete",
+  "recorded_at": "2026-09-10T11:46:21.634120+00:00",
+  "environment": {
+    "host": "mac-m1-max",
+    "chip": "Apple M1 Max",
+    "os": "Darwin",
+    "os_version": "26.6.2",
+    "os_build": "25G83",
+    "python": "3.9.6",
+    "mlx": "0.29.3",
+    "mlx-lm": "0.29.1",
+    "git": {
+      "commit": "6bd89a1fb2fa7c05f07a04b73428a2def5e26fed",
+      "dirty": false
+    },
+    "available_memory_gib_before_load": 18.598,
+    "load_average_1m_before_load": 1.705,
+    "logical_core_count": 10,
+    "generation": {
+      "max_tokens": 128,
+      "temperature": 0.0
+    },
+    "minimum_available_memory_gib": 8,
+    "maximum_load_average_1m": 2.0,
+    "maximum_load_average_1m_per_core": 0.2
+  },
+  "network_layout": {
+    "mode": "single-node",
+    "transport": "local-process",
+    "concurrency": 1
+  },
+  "model": {
+    "key": "qwen2.5-0.5b-instruct-4bit",
+    "model_id": "mlx-community/Qwen2.5-0.5B-Instruct-4bit",
+    "revision": "a5339a4131f135d0fdc6a5c8b5bbed2753bbe0f3",
+    "quantization": "4bit",
+    "present_before_baseline": false
+  },
+  "prompt": {
+    "id": "release-1053",
+    "tokens": 1053
+  },
+  "generation": {
+    "max_tokens": 128,
+    "temperature": 0.0
+  },
+  "run": 2,
+  "metrics": {
+    "prompt_tokens": 1053,
+    "model_load_seconds": 0.555332834,
+    "tokenize_seconds": 0.00045087500000207115,
+    "prefill_seconds": 0.29869616699999924,
+    "decode_seconds": 1.0457615000000011,
+    "time_to_first_token_seconds": 0.2991470420000013,
+    "prefill_tokens_per_second": 3525.32143474075,
+    "decode_tokens_per_second": 121.44260426493025,
+    "mlx_lm_reported_prompt_tok_s": 5221.719542593854,
+    "mlx_lm_reported_generation_tok_s": 123.93840930712152,
+    "total_time_seconds": 1.3449085420000024,
+    "peak_memory_gib": 1.27619904,
+    "generated_tokens": 128,
+    "finish_reason": "length",
+    "output_sha256": "c6b4cca2a006b8ac07002cc41559d0f38b2624f079d3d99c87873ee224ea96d2"
+  }
+}
