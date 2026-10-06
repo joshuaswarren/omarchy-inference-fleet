@@ -1,5 +1,7 @@
 # Omarchy Inference Fleet
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink)](https://github.com/sponsors/joshuaswarren)
+
 This repository holds a small, reproducible MLX inference benchmark for vendor operating systems. It records single-node baselines so Apple and Linux nodes can run the same pinned models and prompts.
 
 The JSON config is the benchmark contract. It pins model revisions, quantization, prompt token counts, generation settings, concurrency, repetitions, warmup, runtime versions, measurement conditions, and the single-node network layout. `benchmark.py` contains no benchmark parameter defaults. Schema version 2 separates wall-clock intervals and checks each result before writing it.
@@ -42,6 +44,14 @@ See [RUNBOOK.md](RUNBOOK.md). The harness uses Python's standard library plus `m
 ```sh
 python3 -m unittest test_benchmark.py
 ```
+
+## Support
+
+Every bit of support helps keep omarchy-inference-fleet alive and free. If you are able, [sponsor on GitHub](https://github.com/sponsors/joshuaswarren) or send a Lightning donation to `joshuaswarren@strike.me` to directly fund continued development and new integrations.
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?style=for-the-badge)](https://github.com/sponsors/joshuaswarren)
+
+If financial support is not an option, you can still make a big difference: [star the repo](https://github.com/joshuaswarren/omarchy-inference-fleet), share it, or recommend it to a colleague. Word of mouth is how most people find omarchy-inference-fleet.
 
 ## License
 
