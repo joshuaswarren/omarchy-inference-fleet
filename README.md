@@ -47,7 +47,7 @@ python3 -m unittest test_benchmark.py
 
 ## Support
 
-Every bit of support helps keep omarchy-inference-fleet alive and free. If you are able, [sponsor on GitHub](https://github.com/sponsors/joshuaswarren) or send a Lightning donation to `joshuaswarren@strike.me` to directly fund continued development and new integrations.
+Every bit of support helps keep omarchy-inference-fleet alive and free. If you are able, [sponsor on GitHub](https://github.com/sponsors/joshuaswarren), [buy me a coffee on Ko-fi](https://ko-fi.com/joshuaswarren), or send a Lightning donation to `joshuaswarren@strike.me` to directly fund continued development and new integrations.
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?style=for-the-badge)](https://github.com/sponsors/joshuaswarren)
 
